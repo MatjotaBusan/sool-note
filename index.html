@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Korean Alcohol Tasting Note Tracker (Makgeolli, Soju, Yakju)</title>
+  <meta name="description" content="A free browser-based Korean sool tasting note tracker for Makgeolli, Yakju, Cheongju, and traditional Soju. Record scores, search notes, export CSV, and share tasting notes by URL." />
 
   <style>
     body {
@@ -15,7 +17,7 @@
     }
 
     .container {
-      max-width: 860px;
+      max-width: 980px;
       margin: 0 auto;
       background: #fffaf2;
       padding: 28px;
@@ -55,6 +57,7 @@
       font-size: 13px;
       color: #7b6d5e;
       margin-top: 4px;
+      line-height: 1.5;
     }
 
     input, select, textarea {
@@ -133,6 +136,11 @@
       color: white;
     }
 
+    .share {
+      background: #3f6f8f;
+      color: white;
+    }
+
     .result-box {
       background: #efe2cd;
       padding: 15px;
@@ -150,6 +158,21 @@
       margin-top: 18px;
     }
 
+    .shared-box {
+      background: #f0eadc;
+      border: 1px solid #d4bd93;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 24px;
+      display: none;
+    }
+
+    .shared-box h2 {
+      margin-top: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
     .note-card {
       border: 1px solid #dfccb0;
       border-radius: 16px;
@@ -157,6 +180,13 @@
       margin-top: 16px;
       background: #fffdf8;
       box-shadow: 0 3px 10px rgba(80, 55, 25, 0.07);
+    }
+
+    .note-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 18px;
+      align-items: center;
     }
 
     .note-card h3 {
@@ -194,6 +224,16 @@
       font-size: 14px;
     }
 
+    .chart-wrap {
+      text-align: center;
+    }
+
+    .chart-wrap canvas {
+      width: 200px;
+      height: 200px;
+      max-width: 100%;
+    }
+
     .empty {
       color: #7b6d5e;
       background: #f5ead8;
@@ -201,7 +241,7 @@
       border-radius: 12px;
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 760px) {
       body {
         padding: 12px;
       }
@@ -218,6 +258,15 @@
         grid-template-columns: 1fr;
       }
 
+      .note-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-wrap canvas {
+        width: 220px;
+        height: 220px;
+      }
+
       .button-row button {
         width: 100%;
       }
@@ -229,9 +278,11 @@
   <div class="container">
     <h1>Korean Sool Tasting Note Tracker</h1>
     <p class="subtitle">
-      Record, score, search, and organize your tasting notes for Korean traditional alcohol,
+      Record, score, search, visualize, export, and share tasting notes for Korean traditional alcohol,
       including Makgeolli (막걸리), Yakju (약주), Cheongju (청주), and traditional Soju (전통소주).
     </p>
+
+    <div id="sharedBox" class="shared-box"></div>
 
     <label for="name">Drink Name</label>
     <input id="name" placeholder="Example: Song Myeong-seop Makgeolli" />
@@ -256,7 +307,10 @@
     <input id="tags" placeholder="Example: sweet, dry, fruity, creamy, food-friendly" />
 
     <h2>Tasting Scores</h2>
-    <p class="hint">Select a score from 1 to 5 for each category. Total score is calculated out of 30.</p>
+    <p class="hint">
+      Select a score from 1 to 5 for each category. Aroma, Sweetness, Acidity, Body, and Finish are visualized in the radar chart.
+      Overall Rating is kept separate as your final impression.
+    </p>
 
     <div class="score-grid">
       <div>
@@ -458,34 +512,157 @@
       }
 
       notes.forEach(note => {
-        const card = document.createElement("div");
-        card.className = "note-card";
-
-        card.innerHTML = `
-          <h3>${note.favorite ? "★ " : ""}${escapeHTML(note.name)}</h3>
-          <div class="note-meta">
-            ${note.date} | ${escapeHTML(note.type)} | ${escapeHTML(note.brewery || "Brewery not entered")} | ${note.abv ? escapeHTML(note.abv) + "% ABV" : "ABV not entered"}
-          </div>
-
-          <div class="score-line">
-            Aroma ${note.aroma} · Sweetness ${note.sweetness} · Acidity ${note.acidity} · Body ${note.bodyScore} · Finish ${note.finish} · Overall ${note.overall}
-          </div>
-
-          <div class="total-score">Total Score: ${note.total} / 30</div>
-
-          ${note.tags ? `<div class="tags">Tags: ${escapeHTML(note.tags)}</div>` : ""}
-
-          <p>${escapeHTML(note.memo || "No tasting note entered.")}</p>
-
-          <div class="button-row">
-            <button class="copy" onclick="copyNote(${note.id})">Copy Note</button>
-            <button class="favorite" onclick="toggleFavorite(${note.id})">${note.favorite ? "Remove Favorite" : "Add Favorite"}</button>
-            <button class="danger" onclick="deleteNote(${note.id})">Delete</button>
-          </div>
-        `;
-
-        noteList.appendChild(card);
+        noteList.appendChild(createNoteCard(note, false));
       });
+
+      drawAllCharts();
+    }
+
+    function createNoteCard(note, isShared) {
+      const card = document.createElement("div");
+      card.className = "note-card";
+
+      const chartId = isShared ? "sharedRadarChart" : `radarChart-${note.id}`;
+
+      card.innerHTML = `
+        <div class="note-layout">
+          <div>
+            <h3>${note.favorite ? "★ " : ""}${escapeHTML(note.name)}</h3>
+
+            <div class="note-meta">
+              ${escapeHTML(note.date || "")} | ${escapeHTML(note.type)} | ${escapeHTML(note.brewery || "Brewery not entered")} | ${note.abv ? escapeHTML(note.abv) + "% ABV" : "ABV not entered"}
+            </div>
+
+            <div class="score-line">
+              Aroma ${note.aroma} · Sweetness ${note.sweetness} · Acidity ${note.acidity} · Body ${note.bodyScore} · Finish ${note.finish} · Overall ${note.overall}
+            </div>
+
+            <div class="total-score">Total Score: ${note.total} / 30</div>
+
+            ${note.tags ? `<div class="tags">Tags: ${escapeHTML(note.tags)}</div>` : ""}
+
+            <p>${escapeHTML(note.memo || "No tasting note entered.")}</p>
+
+            ${isShared ? "" : `
+              <div class="button-row">
+                <button class="copy" onclick="copyNote(${note.id})">Copy Note</button>
+                <button class="share" onclick="shareNote(${note.id})">Share URL</button>
+                <button class="favorite" onclick="toggleFavorite(${note.id})">${note.favorite ? "Remove Favorite" : "Add Favorite"}</button>
+                <button class="danger" onclick="deleteNote(${note.id})">Delete</button>
+              </div>
+            `}
+          </div>
+
+          <div class="chart-wrap">
+            <canvas id="${chartId}" width="220" height="220"></canvas>
+            <div class="hint">Aroma · Sweetness · Acidity · Body · Finish</div>
+          </div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    function drawAllCharts() {
+      const notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
+      notes.forEach(note => {
+        drawRadarChart(`radarChart-${note.id}`, note);
+      });
+    }
+
+    function drawRadarChart(canvasId, note) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      const width = canvas.width;
+      const height = canvas.height;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const maxRadius = 72;
+
+      const labels = ["Aroma", "Sweet", "Acid", "Body", "Finish"];
+      const values = [
+        Number(note.aroma) || 0,
+        Number(note.sweetness) || 0,
+        Number(note.acidity) || 0,
+        Number(note.bodyScore) || 0,
+        Number(note.finish) || 0
+      ];
+
+      ctx.clearRect(0, 0, width, height);
+
+      for (let level = 1; level <= 5; level++) {
+        const radius = (maxRadius / 5) * level;
+        ctx.beginPath();
+
+        for (let i = 0; i < 5; i++) {
+          const angle = (-Math.PI / 2) + (2 * Math.PI * i / 5);
+          const x = centerX + radius * Math.cos(angle);
+          const y = centerY + radius * Math.sin(angle);
+
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+
+        ctx.closePath();
+        ctx.strokeStyle = "#dfccb0";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      for (let i = 0; i < 5; i++) {
+        const angle = (-Math.PI / 2) + (2 * Math.PI * i / 5);
+        const x = centerX + maxRadius * Math.cos(angle);
+        const y = centerY + maxRadius * Math.sin(angle);
+
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = "#eadcc6";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        const labelX = centerX + (maxRadius + 22) * Math.cos(angle);
+        const labelY = centerY + (maxRadius + 22) * Math.sin(angle);
+
+        ctx.fillStyle = "#5b3d1f";
+        ctx.font = "11px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(labels[i], labelX, labelY);
+      }
+
+      ctx.beginPath();
+
+      for (let i = 0; i < 5; i++) {
+        const angle = (-Math.PI / 2) + (2 * Math.PI * i / 5);
+        const radius = (maxRadius / 5) * values[i];
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+
+      ctx.closePath();
+      ctx.fillStyle = "rgba(91, 61, 31, 0.26)";
+      ctx.fill();
+      ctx.strokeStyle = "#5b3d1f";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      for (let i = 0; i < 5; i++) {
+        const angle = (-Math.PI / 2) + (2 * Math.PI * i / 5);
+        const radius = (maxRadius / 5) * values[i];
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, 2 * Math.PI);
+        ctx.fillStyle = "#5b3d1f";
+        ctx.fill();
+      }
     }
 
     function copyNote(id) {
@@ -494,7 +671,15 @@
 
       if (!note) return;
 
-      const text = `Korean Sool Tasting Note
+      const text = buildNoteText(note);
+
+      navigator.clipboard.writeText(text)
+        .then(() => alert("Tasting note copied to clipboard."))
+        .catch(() => alert("Copy failed. Please try again."));
+    }
+
+    function buildNoteText(note) {
+      return `Korean Sool Tasting Note
 
 Drink Name: ${note.name}
 Category: ${note.type}
@@ -514,10 +699,77 @@ Total Score: ${note.total}/30
 
 Tasting Notes:
 ${note.memo || "No tasting note entered."}`;
+    }
 
-      navigator.clipboard.writeText(text)
-        .then(() => alert("Tasting note copied to clipboard."))
-        .catch(() => alert("Copy failed. Please try again."));
+    function shareNote(id) {
+      const notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
+      const note = notes.find(item => item.id === id);
+
+      if (!note) return;
+
+      const shareData = {
+        date: note.date,
+        name: note.name,
+        type: note.type,
+        brewery: note.brewery,
+        abv: note.abv,
+        tags: note.tags,
+        aroma: note.aroma,
+        sweetness: note.sweetness,
+        acidity: note.acidity,
+        bodyScore: note.bodyScore,
+        finish: note.finish,
+        overall: note.overall,
+        total: note.total,
+        memo: note.memo
+      };
+
+      const encoded = encodeShareData(shareData);
+      const shareUrl = `${window.location.origin}${window.location.pathname}?note=${encoded}`;
+
+      navigator.clipboard.writeText(shareUrl)
+        .then(() => alert("Share URL copied to clipboard."))
+        .catch(() => {
+          prompt("Copy this share URL:", shareUrl);
+        });
+    }
+
+    function encodeShareData(data) {
+      const json = JSON.stringify(data);
+      return btoa(unescape(encodeURIComponent(json)));
+    }
+
+    function decodeShareData(encoded) {
+      try {
+        const json = decodeURIComponent(escape(atob(encoded)));
+        return JSON.parse(json);
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function loadSharedNote() {
+      const params = new URLSearchParams(window.location.search);
+      const encoded = params.get("note");
+
+      if (!encoded) return;
+
+      const note = decodeShareData(encoded);
+      if (!note) return;
+
+      const sharedBox = document.getElementById("sharedBox");
+      sharedBox.style.display = "block";
+      sharedBox.innerHTML = `
+        <h2>Shared Tasting Note</h2>
+        <p class="hint">This note was opened from a shared URL. It is not automatically saved to your device.</p>
+      `;
+
+      const sharedCard = createNoteCard(note, true);
+      sharedBox.appendChild(sharedCard);
+
+      setTimeout(() => {
+        drawRadarChart("sharedRadarChart", note);
+      }, 0);
     }
 
     function toggleFavorite(id) {
@@ -606,6 +858,7 @@ ${note.memo || "No tasting note entered."}`;
 
     updateScore();
     renderNotes();
+    loadSharedNote();
   </script>
 </body>
 </html>
