@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Korean Sool Tasting Note Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f5ef;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: #3a2a16;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 14px;
+      margin-bottom: 6px;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: #777;
+      margin-top: 4px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+
+    .primary {
+      width: 100%;
+      background: #6b4f2a;
+      color: white;
+      font-weight: bold;
+    }
+
+    .secondary {
+      background: #ddd;
+      color: #333;
+      margin-right: 8px;
+    }
+
+    .danger {
+      background: #b94a48;
+      color: white;
+    }
+
+    .result-box {
+      background: #f3eadb;
+      padding: 14px;
+      border-radius: 10px;
+      margin-top: 18px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .section-title {
+      margin-top: 28px;
+      border-bottom: 2px solid #e4d6bd;
+      padding-bottom: 8px;
+    }
+
+    .note-card {
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 14px;
+      background: #fffdf9;
+    }
+
+    .note-card h3 {
+      margin: 0 0 8px;
+      color: #3a2a16;
+    }
+
+    .note-meta {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .score-line {
+      font-size: 14px;
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+
+    .note-actions {
+      margin-top: 10px;
+    }
+
+    .empty {
+      color: #777;
+      background: #faf7f0;
+      padding: 14px;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 600px) {
+      .score-grid {
+        grid-template-columns: 1fr;
+      }
+
+      body {
+        padding: 12px;
+      }
+
+      .container {
+        padding: 18px;
+      }
+
+      button {
+        width: 100%;
+        margin-right: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Korean Sool Tasting Note Tracker</h1>
+    <p class="subtitle">
+      Record and manage tasting notes for Korean traditional alcohol, including Makgeolli, Yakju, Cheongju, and traditional Soju.
+    </p>
+
+    <label for="name">Drink Name</label>
+    <input id="name" placeholder="Example: Song Myeong-seop Makgeolli" />
+
+    <label for="type">Category</label>
+    <select id="type">
+      <option value="Makgeolli (막걸리)">Makgeolli (막걸리)</option>
+      <option value="Yakju (약주)">Yakju (약주)</option>
+      <option value="Cheongju (청주)">Cheongju (청주)</option>
+      <option value="Traditional Soju (전통소주)">Traditional Soju (전통소주)</option>
+      <option value="Fruit Wine (과실주)">Fruit Wine (과실주)</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <label for="brewery">Brewery / Brand</label>
+    <input id="brewery" placeholder="Example: Taein Brewery, Guksundang" />
+
+    <label for="abv">Alcohol by Volume, ABV (%)</label>
+    <input id="abv" type="number" step="0.1" placeholder="Example: 6.0" />
+
+    <h2 class="section-title">Tasting Scores</h2>
+    <p class="hint">Rate each category from 1 to 5. The total score is calculated out of 30.</p>
+
+    <div class="score-grid">
+      <div>
+        <label for="aroma">Aroma (향)</label>
+        <input id="aroma" type="number" min="1" max="5" value="3" />
+      </div>
+
+      <div>
+        <label for="sweetness">Sweetness (단맛)</label>
+        <input id="sweetness" type="number" min="1" max="5" value="3" />
+      </div>
+
+      <div>
+        <label for="acidity">Acidity (산미)</label>
+        <input id="acidity" type="number" min="1" max="5" value="3" />
+      </div>
+
+      <div>
+        <label for="bodyScore">Body (바디감)</label>
+        <input id="bodyScore" type="number" min="1" max="5" value="3" />
+      </div>
+
+      <div>
+        <label for="finish">Finish (여운)</label>
+        <input id="finish" type="number" min="1" max="5" value="3" />
+      </div>
+
+      <div>
+        <label for="overall">Overall Impression (종합 인상)</label>
+        <input id="overall" type="number" min="1" max="5" value="3" />
+      </div>
+    </div>
+
+    <div class="result-box" id="scoreResult">Estimated Total Score: 18 / 30</div>
+
+    <label for="memo">Tasting Notes</label>
+    <textarea id="memo" placeholder="Write about aroma, flavor, texture, finish, food pairing, or whether you would buy it again."></textarea>
+
+    <button class="primary" onclick="saveNote()">Save Tasting Note</button>
+
+    <button class="secondary" onclick="downloadCSV()">Download CSV</button>
+    <button class="danger" onclick="clearAllNotes()">Delete All</button>
+
+    <h2 class="section-title">Saved Tasting Notes</h2>
+    <div id="noteList"></div>
+  </div>
+
+  <script>
+    const scoreIds = ["aroma", "sweetness", "acidity", "bodyScore", "finish", "overall"];
+
+    scoreIds.forEach(id => {
+      document.getElementById(id).addEventListener("input", updateScore);
+    });
+
+    function getScore(id) {
+      const value = Number(document.getElementById(id).value);
+      if (value < 1) return 1;
+      if (value > 5) return 5;
+      return value || 0;
+    }
+
+    function updateScore() {
+      const total = scoreIds.reduce((sum, id) => sum + getScore(id), 0);
+      document.getElementById("scoreResult").textContent = `Estimated Total Score: ${total} / 30`;
+    }
+
+    function saveNote() {
+      const name = document.getElementById("name").value.trim();
+
+      if (!name) {
+        alert("Please enter the drink name.");
+        return;
+      }
+
+      const note = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString("en-US"),
+        name,
+        type: document.getElementById("type").value,
+        brewery: document.getElementById("brewery").value.trim(),
+        abv: document.getElementById("abv").value,
+        aroma: getScore("aroma"),
+        sweetness: getScore("sweetness"),
+        acidity: getScore("acidity"),
+        bodyScore: getScore("bodyScore"),
+        finish: getScore("finish"),
+        overall: getScore("overall"),
+        memo: document.getElementById("memo").value.trim()
+      };
+
+      note.total = note.aroma + note.sweetness + note.acidity + note.bodyScore + note.finish + note.overall;
+
+      const notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
+      notes.unshift(note);
+      localStorage.setItem("soolNotes", JSON.stringify(notes));
+
+      resetForm();
+      renderNotes();
+    }
+
+    function resetForm() {
+      document.getElementById("name").value = "";
+      document.getElementById("brewery").value = "";
+      document.getElementById("abv").value = "";
+      document.getElementById("memo").value = "";
+      scoreIds.forEach(id => document.getElementById(id).value = 3);
+      updateScore();
+    }
+
+    function renderNotes() {
+      const notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
+      const noteList = document.getElementById("noteList");
+      noteList.innerHTML = "";
+
+      if (notes.length === 0) {
+        noteList.innerHTML = '<p class="empty">No tasting notes have been saved yet.</p>';
+        return;
+      }
+
+      notes.forEach(note => {
+        const card = document.createElement("div");
+        card.className = "note-card";
+
+        card.innerHTML = `
+          <h3>${note.name}</h3>
+          <div class="note-meta">
+            ${note.date} | ${note.type} | ${note.brewery || "Brewery not entered"} | ${note.abv ? note.abv + "% ABV" : "ABV not entered"}
+          </div>
+          <div class="score-line">
+            Aroma ${note.aroma} · Sweetness ${note.sweetness} · Acidity ${note.acidity} · Body ${note.bodyScore} · Finish ${note.finish} · Overall ${note.overall}
+          </div>
+          <strong>Total Score: ${note.total} / 30</strong>
+          <p>${note.memo || "No memo entered."}</p>
+          <div class="note-actions">
+            <button class="danger" onclick="deleteNote(${note.id})">Delete</button>
+          </div>
+        `;
+
+        noteList.appendChild(card);
+      });
+    }
+
+    function deleteNote(id) {
+      const notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
+      const filtered = notes.filter(note => note.id !== id);
+      localStorage.setItem("soolNotes", JSON.stringify(filtered));
+      renderNotes();
+    }
+
+    function clearAllNotes() {
+      if (confirm("Are you sure you want to delete all tasting notes?")) {
+        localStorage.removeItem("soolNotes");
+        renderNotes();
+      }
+    }
+
+    function downloadCSV() {
+      const notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
+
+      if (notes.length === 0) {
+        alert("There are no tasting notes to download.");
+        return;
+      }
+
+      const headers = [
+        "Date", "Name", "Type", "Brewery", "ABV",
+        "Aroma", "Sweetness", "Acidity", "Body", "Finish", "Overall", "Total", "Memo"
+      ];
+
+      const rows = notes.map(note => [
+        note.date,
+        note.name,
+        note.type,
+        note.brewery,
+        note.abv,
+        note.aroma,
+        note.sweetness,
+        note.acidity,
+        note.bodyScore,
+        note.finish,
+        note.overall,
+        note.total,
+        note.memo
+      ]);
+
+      const csvContent = [headers, ...rows]
+        .map(row => row.map(value => `"${String(value || "").replace(/"/g, '""')}"`).join(","))
+        .join("\n");
+
+      const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "korean-sool-tasting-notes.csv";
+      link.click();
+
+      URL.revokeObjectURL(url);
+    }
+
+    updateScore();
+    renderNotes();
+  </script>
+</body>
+</html>
