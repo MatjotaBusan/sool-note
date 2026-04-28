@@ -3,167 +3,223 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Korean Sool Tasting Note Tracker</title>
+  <title>Korean Alcohol Tasting Note Tracker (Makgeolli, Soju, Yakju)</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f8f5ef;
-      color: #333;
+      background: linear-gradient(135deg, #f7f1e6, #efe2cd);
+      color: #2f261c;
       margin: 0;
       padding: 20px;
     }
 
     .container {
-      max-width: 780px;
+      max-width: 860px;
       margin: 0 auto;
-      background: #fff;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      background: #fffaf2;
+      padding: 28px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(80, 55, 25, 0.14);
     }
 
     h1 {
       text-align: center;
-      font-size: 28px;
+      font-size: 30px;
       margin-bottom: 8px;
-      color: #3a2a16;
+      color: #3a2614;
     }
 
     .subtitle {
       text-align: center;
-      color: #666;
-      margin-bottom: 24px;
-      line-height: 1.5;
+      color: #6f6254;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    h2 {
+      margin-top: 32px;
+      border-bottom: 2px solid #e2cfae;
+      padding-bottom: 8px;
+      color: #3a2614;
     }
 
     label {
       display: block;
       font-weight: bold;
-      margin-top: 14px;
+      margin-top: 15px;
       margin-bottom: 6px;
     }
 
     .hint {
       font-size: 13px;
-      color: #777;
+      color: #7b6d5e;
       margin-top: 4px;
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 11px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid #cdbb9d;
+      border-radius: 10px;
       font-size: 15px;
       box-sizing: border-box;
+      background: #fff;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #8b642f;
+      box-shadow: 0 0 0 3px rgba(139, 100, 47, 0.15);
     }
 
     textarea {
-      min-height: 90px;
+      min-height: 100px;
       resize: vertical;
     }
 
     .score-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 14px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
     }
 
     button {
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       padding: 12px 16px;
       font-size: 15px;
       cursor: pointer;
-      margin-top: 16px;
+      transition: 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.92;
     }
 
     .primary {
       width: 100%;
-      background: #6b4f2a;
+      background: #5b3d1f;
       color: white;
       font-weight: bold;
+      margin-top: 18px;
     }
 
     .secondary {
-      background: #ddd;
-      color: #333;
-      margin-right: 8px;
+      background: #e7dcc8;
+      color: #3a2614;
     }
 
     .danger {
-      background: #b94a48;
+      background: #a94442;
+      color: white;
+    }
+
+    .copy {
+      background: #4f6f52;
+      color: white;
+    }
+
+    .favorite {
+      background: #c28f2c;
       color: white;
     }
 
     .result-box {
-      background: #f3eadb;
-      padding: 14px;
-      border-radius: 10px;
+      background: #efe2cd;
+      padding: 15px;
+      border-radius: 12px;
       margin-top: 18px;
       font-weight: bold;
       text-align: center;
+      color: #3a2614;
     }
 
-    .section-title {
-      margin-top: 28px;
-      border-bottom: 2px solid #e4d6bd;
-      padding-bottom: 8px;
+    .tools {
+      background: #f5ead8;
+      padding: 16px;
+      border-radius: 14px;
+      margin-top: 18px;
     }
 
     .note-card {
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 14px;
-      background: #fffdf9;
+      border: 1px solid #dfccb0;
+      border-radius: 16px;
+      padding: 18px;
+      margin-top: 16px;
+      background: #fffdf8;
+      box-shadow: 0 3px 10px rgba(80, 55, 25, 0.07);
     }
 
     .note-card h3 {
       margin: 0 0 8px;
-      color: #3a2a16;
+      color: #3a2614;
+      font-size: 20px;
     }
 
     .note-meta {
-      color: #666;
+      color: #6f6254;
       font-size: 14px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       line-height: 1.5;
     }
 
     .score-line {
       font-size: 14px;
-      margin: 8px 0;
-      line-height: 1.5;
+      margin: 10px 0;
+      line-height: 1.6;
     }
 
-    .note-actions {
-      margin-top: 10px;
+    .total-score {
+      display: inline-block;
+      background: #5b3d1f;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin: 6px 0;
+    }
+
+    .tags {
+      margin-top: 8px;
+      color: #5b3d1f;
+      font-size: 14px;
     }
 
     .empty {
-      color: #777;
-      background: #faf7f0;
-      padding: 14px;
-      border-radius: 10px;
+      color: #7b6d5e;
+      background: #f5ead8;
+      padding: 16px;
+      border-radius: 12px;
     }
 
-    @media (max-width: 600px) {
-      .score-grid {
-        grid-template-columns: 1fr;
-      }
-
+    @media (max-width: 640px) {
       body {
         padding: 12px;
       }
 
       .container {
-        padding: 18px;
+        padding: 20px;
       }
 
-      button {
+      h1 {
+        font-size: 25px;
+      }
+
+      .score-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .button-row button {
         width: 100%;
-        margin-right: 0;
       }
     }
   </style>
@@ -173,7 +229,8 @@
   <div class="container">
     <h1>Korean Sool Tasting Note Tracker</h1>
     <p class="subtitle">
-      Record and manage tasting notes for Korean traditional alcohol, including Makgeolli, Yakju, Cheongju, and traditional Soju.
+      Record, score, search, and organize your tasting notes for Korean traditional alcohol,
+      including Makgeolli (막걸리), Yakju (약주), Cheongju (청주), and traditional Soju (전통소주).
     </p>
 
     <label for="name">Drink Name</label>
@@ -195,72 +252,123 @@
     <label for="abv">Alcohol by Volume, ABV (%)</label>
     <input id="abv" type="number" step="0.1" placeholder="Example: 6.0" />
 
-    <h2 class="section-title">Tasting Scores</h2>
-    <p class="hint">Rate each category from 1 to 5. The total score is calculated out of 30.</p>
+    <label for="tags">Tags</label>
+    <input id="tags" placeholder="Example: sweet, dry, fruity, creamy, food-friendly" />
+
+    <h2>Tasting Scores</h2>
+    <p class="hint">Select a score from 1 to 5 for each category. Total score is calculated out of 30.</p>
 
     <div class="score-grid">
       <div>
         <label for="aroma">Aroma (향)</label>
-        <input id="aroma" type="number" min="1" max="5" value="3" />
+        <select id="aroma">
+          <option value="1">1 - Weak</option>
+          <option value="2">2 - Mild</option>
+          <option value="3" selected>3 - Good</option>
+          <option value="4">4 - Very Good</option>
+          <option value="5">5 - Excellent</option>
+        </select>
       </div>
 
       <div>
         <label for="sweetness">Sweetness (단맛)</label>
-        <input id="sweetness" type="number" min="1" max="5" value="3" />
+        <select id="sweetness">
+          <option value="1">1 - Very Low</option>
+          <option value="2">2 - Low</option>
+          <option value="3" selected>3 - Moderate</option>
+          <option value="4">4 - Sweet</option>
+          <option value="5">5 - Very Sweet</option>
+        </select>
       </div>
 
       <div>
         <label for="acidity">Acidity (산미)</label>
-        <input id="acidity" type="number" min="1" max="5" value="3" />
+        <select id="acidity">
+          <option value="1">1 - Very Low</option>
+          <option value="2">2 - Low</option>
+          <option value="3" selected>3 - Balanced</option>
+          <option value="4">4 - Bright</option>
+          <option value="5">5 - Very Bright</option>
+        </select>
       </div>
 
       <div>
         <label for="bodyScore">Body (바디감)</label>
-        <input id="bodyScore" type="number" min="1" max="5" value="3" />
+        <select id="bodyScore">
+          <option value="1">1 - Light</option>
+          <option value="2">2 - Medium-Light</option>
+          <option value="3" selected>3 - Medium</option>
+          <option value="4">4 - Full</option>
+          <option value="5">5 - Very Full</option>
+        </select>
       </div>
 
       <div>
         <label for="finish">Finish (여운)</label>
-        <input id="finish" type="number" min="1" max="5" value="3" />
+        <select id="finish">
+          <option value="1">1 - Short</option>
+          <option value="2">2 - Mild</option>
+          <option value="3" selected>3 - Pleasant</option>
+          <option value="4">4 - Long</option>
+          <option value="5">5 - Excellent</option>
+        </select>
       </div>
 
       <div>
-        <label for="overall">Overall Impression (종합 인상)</label>
-        <input id="overall" type="number" min="1" max="5" value="3" />
+        <label for="overall">Overall Rating (종합 평가)</label>
+        <select id="overall">
+          <option value="1">1 - Poor</option>
+          <option value="2">2 - Fair</option>
+          <option value="3" selected>3 - Good</option>
+          <option value="4">4 - Very Good</option>
+          <option value="5">5 - Excellent</option>
+        </select>
       </div>
     </div>
 
-    <div class="result-box" id="scoreResult">Estimated Total Score: 18 / 30</div>
+    <div class="result-box" id="scoreResult">Total Score: 18 / 30</div>
 
     <label for="memo">Tasting Notes</label>
     <textarea id="memo" placeholder="Write about aroma, flavor, texture, finish, food pairing, or whether you would buy it again."></textarea>
 
-    <button class="primary" onclick="saveNote()">Save Tasting Note</button>
+    <button class="primary" onclick="saveNote()">Save Note</button>
 
-    <button class="secondary" onclick="downloadCSV()">Download CSV</button>
-    <button class="danger" onclick="clearAllNotes()">Delete All</button>
+    <div class="button-row">
+      <button class="secondary" onclick="downloadCSV()">Download CSV</button>
+      <button class="danger" onclick="clearAllNotes()">Clear All Notes</button>
+    </div>
 
-    <h2 class="section-title">Saved Tasting Notes</h2>
+    <h2>Saved Tasting Notes</h2>
+
+    <div class="tools">
+      <label for="search">Search by Drink Name</label>
+      <input id="search" placeholder="Search saved notes..." oninput="renderNotes()" />
+
+      <div class="button-row">
+        <button class="secondary" onclick="setSortMode('latest')">Sort by Latest</button>
+        <button class="secondary" onclick="setSortMode('score')">Sort by Highest Score</button>
+        <button class="secondary" onclick="setSortMode('favorite')">Show Favorites First</button>
+      </div>
+    </div>
+
     <div id="noteList"></div>
   </div>
 
   <script>
     const scoreIds = ["aroma", "sweetness", "acidity", "bodyScore", "finish", "overall"];
+    let sortMode = "latest";
 
     scoreIds.forEach(id => {
-      document.getElementById(id).addEventListener("input", updateScore);
+      document.getElementById(id).addEventListener("change", updateScore);
     });
 
     function getScore(id) {
-      const value = Number(document.getElementById(id).value);
-      if (value < 1) return 1;
-      if (value > 5) return 5;
-      return value || 0;
+      return Number(document.getElementById(id).value) || 0;
     }
 
     function updateScore() {
       const total = scoreIds.reduce((sum, id) => sum + getScore(id), 0);
-      document.getElementById("scoreResult").textContent = `Estimated Total Score: ${total} / 30`;
+      document.getElementById("scoreResult").textContent = `Total Score: ${total} / 30`;
     }
 
     function saveNote() {
@@ -278,13 +386,15 @@
         type: document.getElementById("type").value,
         brewery: document.getElementById("brewery").value.trim(),
         abv: document.getElementById("abv").value,
+        tags: document.getElementById("tags").value.trim(),
         aroma: getScore("aroma"),
         sweetness: getScore("sweetness"),
         acidity: getScore("acidity"),
         bodyScore: getScore("bodyScore"),
         finish: getScore("finish"),
         overall: getScore("overall"),
-        memo: document.getElementById("memo").value.trim()
+        memo: document.getElementById("memo").value.trim(),
+        favorite: false
       };
 
       note.total = note.aroma + note.sweetness + note.acidity + note.bodyScore + note.finish + note.overall;
@@ -301,18 +411,49 @@
       document.getElementById("name").value = "";
       document.getElementById("brewery").value = "";
       document.getElementById("abv").value = "";
+      document.getElementById("tags").value = "";
       document.getElementById("memo").value = "";
       scoreIds.forEach(id => document.getElementById(id).value = 3);
       updateScore();
     }
 
+    function setSortMode(mode) {
+      sortMode = mode;
+      renderNotes();
+    }
+
+    function getSortedNotes(notes) {
+      if (sortMode === "score") {
+        return notes.sort((a, b) => b.total - a.total);
+      }
+
+      if (sortMode === "favorite") {
+        return notes.sort((a, b) => {
+          if (a.favorite === b.favorite) return b.id - a.id;
+          return b.favorite - a.favorite;
+        });
+      }
+
+      return notes.sort((a, b) => b.id - a.id);
+    }
+
     function renderNotes() {
-      const notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
+      const keyword = document.getElementById("search").value.toLowerCase().trim();
+      let notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
+
+      notes = getSortedNotes(notes);
+
+      if (keyword) {
+        notes = notes.filter(note =>
+          note.name.toLowerCase().includes(keyword)
+        );
+      }
+
       const noteList = document.getElementById("noteList");
       noteList.innerHTML = "";
 
       if (notes.length === 0) {
-        noteList.innerHTML = '<p class="empty">No tasting notes have been saved yet.</p>';
+        noteList.innerHTML = '<p class="empty">No tasting notes found.</p>';
         return;
       }
 
@@ -321,16 +462,24 @@
         card.className = "note-card";
 
         card.innerHTML = `
-          <h3>${note.name}</h3>
+          <h3>${note.favorite ? "★ " : ""}${escapeHTML(note.name)}</h3>
           <div class="note-meta">
-            ${note.date} | ${note.type} | ${note.brewery || "Brewery not entered"} | ${note.abv ? note.abv + "% ABV" : "ABV not entered"}
+            ${note.date} | ${escapeHTML(note.type)} | ${escapeHTML(note.brewery || "Brewery not entered")} | ${note.abv ? escapeHTML(note.abv) + "% ABV" : "ABV not entered"}
           </div>
+
           <div class="score-line">
             Aroma ${note.aroma} · Sweetness ${note.sweetness} · Acidity ${note.acidity} · Body ${note.bodyScore} · Finish ${note.finish} · Overall ${note.overall}
           </div>
-          <strong>Total Score: ${note.total} / 30</strong>
-          <p>${note.memo || "No memo entered."}</p>
-          <div class="note-actions">
+
+          <div class="total-score">Total Score: ${note.total} / 30</div>
+
+          ${note.tags ? `<div class="tags">Tags: ${escapeHTML(note.tags)}</div>` : ""}
+
+          <p>${escapeHTML(note.memo || "No tasting note entered.")}</p>
+
+          <div class="button-row">
+            <button class="copy" onclick="copyNote(${note.id})">Copy Note</button>
+            <button class="favorite" onclick="toggleFavorite(${note.id})">${note.favorite ? "Remove Favorite" : "Add Favorite"}</button>
             <button class="danger" onclick="deleteNote(${note.id})">Delete</button>
           </div>
         `;
@@ -339,7 +488,54 @@
       });
     }
 
+    function copyNote(id) {
+      const notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
+      const note = notes.find(item => item.id === id);
+
+      if (!note) return;
+
+      const text = `Korean Sool Tasting Note
+
+Drink Name: ${note.name}
+Category: ${note.type}
+Brewery / Brand: ${note.brewery || "Not entered"}
+ABV: ${note.abv ? note.abv + "%" : "Not entered"}
+Tags: ${note.tags || "None"}
+
+Scores:
+- Aroma: ${note.aroma}/5
+- Sweetness: ${note.sweetness}/5
+- Acidity: ${note.acidity}/5
+- Body: ${note.bodyScore}/5
+- Finish: ${note.finish}/5
+- Overall Rating: ${note.overall}/5
+
+Total Score: ${note.total}/30
+
+Tasting Notes:
+${note.memo || "No tasting note entered."}`;
+
+      navigator.clipboard.writeText(text)
+        .then(() => alert("Tasting note copied to clipboard."))
+        .catch(() => alert("Copy failed. Please try again."));
+    }
+
+    function toggleFavorite(id) {
+      const notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
+      const updatedNotes = notes.map(note => {
+        if (note.id === id) {
+          note.favorite = !note.favorite;
+        }
+        return note;
+      });
+
+      localStorage.setItem("soolNotes", JSON.stringify(updatedNotes));
+      renderNotes();
+    }
+
     function deleteNote(id) {
+      if (!confirm("Delete this tasting note?")) return;
+
       const notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
       const filtered = notes.filter(note => note.id !== id);
       localStorage.setItem("soolNotes", JSON.stringify(filtered));
@@ -362,8 +558,8 @@
       }
 
       const headers = [
-        "Date", "Name", "Type", "Brewery", "ABV",
-        "Aroma", "Sweetness", "Acidity", "Body", "Finish", "Overall", "Total", "Memo"
+        "Date", "Name", "Type", "Brewery", "ABV", "Tags",
+        "Aroma", "Sweetness", "Acidity", "Body", "Finish", "Overall", "Total", "Favorite", "Memo"
       ];
 
       const rows = notes.map(note => [
@@ -372,6 +568,7 @@
         note.type,
         note.brewery,
         note.abv,
+        note.tags,
         note.aroma,
         note.sweetness,
         note.acidity,
@@ -379,6 +576,7 @@
         note.finish,
         note.overall,
         note.total,
+        note.favorite ? "Yes" : "No",
         note.memo
       ]);
 
@@ -395,6 +593,15 @@
       link.click();
 
       URL.revokeObjectURL(url);
+    }
+
+    function escapeHTML(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
     updateScore();
