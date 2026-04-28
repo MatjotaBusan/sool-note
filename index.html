@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Korean Alcohol Tasting Note Tracker (Makgeolli, Soju, Yakju)</title>
-  <meta name="description" content="A free browser-based Korean sool tasting note tracker for Makgeolli, Yakju, Cheongju, and traditional Soju. Record scores, search notes, export CSV, and share tasting notes by URL." />
+  <meta name="description" content="A free browser-based Korean sool tasting note tracker for Makgeolli, Yakju, Cheongju, and traditional Soju. Record flavor profiles, quality ratings, search notes, export CSV, and share tasting notes by URL." />
 
   <style>
     body {
@@ -208,7 +208,7 @@
       line-height: 1.6;
     }
 
-    .total-score {
+    .quality-score {
       display: inline-block;
       background: #5b3d1f;
       color: white;
@@ -232,6 +232,12 @@
       width: 200px;
       height: 200px;
       max-width: 100%;
+    }
+
+    .chart-label {
+      font-size: 13px;
+      color: #7b6d5e;
+      margin-top: 6px;
     }
 
     .empty {
@@ -306,30 +312,29 @@
     <label for="tags">Tags</label>
     <input id="tags" placeholder="Example: sweet, dry, fruity, creamy, food-friendly" />
 
-    <h2>Tasting Scores</h2>
+    <h2>Flavor Profile</h2>
     <p class="hint">
-      Select a score from 1 to 5 for each category. Aroma, Sweetness, Acidity, Body, and Finish are visualized in the radar chart.
-      Overall Rating is kept separate as your final impression.
+      These values describe the style and intensity of the drink. Higher does not always mean better.
     </p>
 
     <div class="score-grid">
       <div>
-        <label for="aroma">Aroma (향)</label>
+        <label for="aroma">Aroma Intensity (향의 강도)</label>
         <select id="aroma">
-          <option value="1">1 - Weak</option>
+          <option value="1">1 - Very Subtle</option>
           <option value="2">2 - Mild</option>
-          <option value="3" selected>3 - Good</option>
-          <option value="4">4 - Very Good</option>
-          <option value="5">5 - Excellent</option>
+          <option value="3" selected>3 - Moderate</option>
+          <option value="4">4 - Pronounced</option>
+          <option value="5">5 - Very Intense</option>
         </select>
       </div>
 
       <div>
         <label for="sweetness">Sweetness (단맛)</label>
         <select id="sweetness">
-          <option value="1">1 - Very Low</option>
-          <option value="2">2 - Low</option>
-          <option value="3" selected>3 - Moderate</option>
+          <option value="1">1 - Very Dry</option>
+          <option value="2">2 - Slightly Sweet</option>
+          <option value="3" selected>3 - Medium Sweet</option>
           <option value="4">4 - Sweet</option>
           <option value="5">5 - Very Sweet</option>
         </select>
@@ -339,18 +344,18 @@
         <label for="acidity">Acidity (산미)</label>
         <select id="acidity">
           <option value="1">1 - Very Low</option>
-          <option value="2">2 - Low</option>
+          <option value="2">2 - Soft</option>
           <option value="3" selected>3 - Balanced</option>
           <option value="4">4 - Bright</option>
-          <option value="5">5 - Very Bright</option>
+          <option value="5">5 - Very Tart</option>
         </select>
       </div>
 
       <div>
         <label for="bodyScore">Body (바디감)</label>
         <select id="bodyScore">
-          <option value="1">1 - Light</option>
-          <option value="2">2 - Medium-Light</option>
+          <option value="1">1 - Very Light</option>
+          <option value="2">2 - Light</option>
           <option value="3" selected>3 - Medium</option>
           <option value="4">4 - Full</option>
           <option value="5">5 - Very Full</option>
@@ -358,19 +363,26 @@
       </div>
 
       <div>
-        <label for="finish">Finish (여운)</label>
-        <select id="finish">
-          <option value="1">1 - Short</option>
-          <option value="2">2 - Mild</option>
-          <option value="3" selected>3 - Pleasant</option>
+        <label for="finishLength">Finish Length (여운의 길이)</label>
+        <select id="finishLength">
+          <option value="1">1 - Very Short</option>
+          <option value="2">2 - Short</option>
+          <option value="3" selected>3 - Medium</option>
           <option value="4">4 - Long</option>
-          <option value="5">5 - Excellent</option>
+          <option value="5">5 - Very Long</option>
         </select>
       </div>
+    </div>
 
+    <h2>Quality Rating</h2>
+    <p class="hint">
+      These values evaluate quality and personal satisfaction. The quality score is calculated out of 25.
+    </p>
+
+    <div class="score-grid">
       <div>
-        <label for="overall">Overall Rating (종합 평가)</label>
-        <select id="overall">
+        <label for="balance">Balance (균형감)</label>
+        <select id="balance">
           <option value="1">1 - Poor</option>
           <option value="2">2 - Fair</option>
           <option value="3" selected>3 - Good</option>
@@ -378,9 +390,53 @@
           <option value="5">5 - Excellent</option>
         </select>
       </div>
+
+      <div>
+        <label for="complexity">Complexity (복합미)</label>
+        <select id="complexity">
+          <option value="1">1 - Simple</option>
+          <option value="2">2 - Mild</option>
+          <option value="3" selected>3 - Moderate</option>
+          <option value="4">4 - Complex</option>
+          <option value="5">5 - Very Complex</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="cleanliness">Cleanliness (깔끔함)</label>
+        <select id="cleanliness">
+          <option value="1">1 - Flawed</option>
+          <option value="2">2 - Rough</option>
+          <option value="3" selected>3 - Clean</option>
+          <option value="4">4 - Very Clean</option>
+          <option value="5">5 - Excellent</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="finishQuality">Finish Quality (여운의 품질)</label>
+        <select id="finishQuality">
+          <option value="1">1 - Poor</option>
+          <option value="2">2 - Fair</option>
+          <option value="3" selected>3 - Good</option>
+          <option value="4">4 - Very Good</option>
+          <option value="5">5 - Excellent</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="preference">Personal Preference (개인 취향)</label>
+        <select id="preference">
+          <option value="1">1 - Not My Style</option>
+          <option value="2">2 - Somewhat Okay</option>
+          <option value="3" selected>3 - Good</option>
+          <option value="4">4 - I Like It</option>
+          <option value="5">5 - I Love It</option>
+        </select>
+      </div>
     </div>
 
-    <div class="result-box" id="scoreResult">Total Score: 18 / 30</div>
+    <div class="result-box" id="qualityResult">Quality Score: 15 / 25</div>
 
     <label for="memo">Tasting Notes</label>
     <textarea id="memo" placeholder="Write about aroma, flavor, texture, finish, food pairing, or whether you would buy it again."></textarea>
@@ -400,7 +456,7 @@
 
       <div class="button-row">
         <button class="secondary" onclick="setSortMode('latest')">Sort by Latest</button>
-        <button class="secondary" onclick="setSortMode('score')">Sort by Highest Score</button>
+        <button class="secondary" onclick="setSortMode('score')">Sort by Highest Quality Score</button>
         <button class="secondary" onclick="setSortMode('favorite')">Show Favorites First</button>
       </div>
     </div>
@@ -409,20 +465,21 @@
   </div>
 
   <script>
-    const scoreIds = ["aroma", "sweetness", "acidity", "bodyScore", "finish", "overall"];
+    const flavorIds = ["aroma", "sweetness", "acidity", "bodyScore", "finishLength"];
+    const qualityIds = ["balance", "complexity", "cleanliness", "finishQuality", "preference"];
     let sortMode = "latest";
 
-    scoreIds.forEach(id => {
-      document.getElementById(id).addEventListener("change", updateScore);
+    qualityIds.forEach(id => {
+      document.getElementById(id).addEventListener("change", updateQualityScore);
     });
 
-    function getScore(id) {
+    function getValue(id) {
       return Number(document.getElementById(id).value) || 0;
     }
 
-    function updateScore() {
-      const total = scoreIds.reduce((sum, id) => sum + getScore(id), 0);
-      document.getElementById("scoreResult").textContent = `Total Score: ${total} / 30`;
+    function updateQualityScore() {
+      const qualityScore = qualityIds.reduce((sum, id) => sum + getValue(id), 0);
+      document.getElementById("qualityResult").textContent = `Quality Score: ${qualityScore} / 25`;
     }
 
     function saveNote() {
@@ -441,17 +498,24 @@
         brewery: document.getElementById("brewery").value.trim(),
         abv: document.getElementById("abv").value,
         tags: document.getElementById("tags").value.trim(),
-        aroma: getScore("aroma"),
-        sweetness: getScore("sweetness"),
-        acidity: getScore("acidity"),
-        bodyScore: getScore("bodyScore"),
-        finish: getScore("finish"),
-        overall: getScore("overall"),
+
+        aroma: getValue("aroma"),
+        sweetness: getValue("sweetness"),
+        acidity: getValue("acidity"),
+        bodyScore: getValue("bodyScore"),
+        finishLength: getValue("finishLength"),
+
+        balance: getValue("balance"),
+        complexity: getValue("complexity"),
+        cleanliness: getValue("cleanliness"),
+        finishQuality: getValue("finishQuality"),
+        preference: getValue("preference"),
+
         memo: document.getElementById("memo").value.trim(),
         favorite: false
       };
 
-      note.total = note.aroma + note.sweetness + note.acidity + note.bodyScore + note.finish + note.overall;
+      note.qualityScore = note.balance + note.complexity + note.cleanliness + note.finishQuality + note.preference;
 
       const notes = JSON.parse(localStorage.getItem("soolNotes") || "[]");
       notes.unshift(note);
@@ -467,8 +531,11 @@
       document.getElementById("abv").value = "";
       document.getElementById("tags").value = "";
       document.getElementById("memo").value = "";
-      scoreIds.forEach(id => document.getElementById(id).value = 3);
-      updateScore();
+
+      flavorIds.forEach(id => document.getElementById(id).value = 3);
+      qualityIds.forEach(id => document.getElementById(id).value = 3);
+
+      updateQualityScore();
     }
 
     function setSortMode(mode) {
@@ -478,7 +545,7 @@
 
     function getSortedNotes(notes) {
       if (sortMode === "score") {
-        return notes.sort((a, b) => b.total - a.total);
+        return notes.sort((a, b) => getNoteQualityScore(b) - getNoteQualityScore(a));
       }
 
       if (sortMode === "favorite") {
@@ -489,6 +556,18 @@
       }
 
       return notes.sort((a, b) => b.id - a.id);
+    }
+
+    function getNoteQualityScore(note) {
+      if (typeof note.qualityScore === "number") return note.qualityScore;
+
+      return (
+        Number(note.balance || 0) +
+        Number(note.complexity || 0) +
+        Number(note.cleanliness || 0) +
+        Number(note.finishQuality || 0) +
+        Number(note.preference || note.overall || 0)
+      );
     }
 
     function renderNotes() {
@@ -523,6 +602,7 @@
       card.className = "note-card";
 
       const chartId = isShared ? "sharedRadarChart" : `radarChart-${note.id}`;
+      const qualityScore = getNoteQualityScore(note);
 
       card.innerHTML = `
         <div class="note-layout">
@@ -534,10 +614,16 @@
             </div>
 
             <div class="score-line">
-              Aroma ${note.aroma} · Sweetness ${note.sweetness} · Acidity ${note.acidity} · Body ${note.bodyScore} · Finish ${note.finish} · Overall ${note.overall}
+              <strong>Flavor Profile:</strong>
+              Aroma ${note.aroma} · Sweetness ${note.sweetness} · Acidity ${note.acidity} · Body ${note.bodyScore} · Finish Length ${note.finishLength || note.finish || 0}
             </div>
 
-            <div class="total-score">Total Score: ${note.total} / 30</div>
+            <div class="score-line">
+              <strong>Quality Rating:</strong>
+              Balance ${note.balance || 0} · Complexity ${note.complexity || 0} · Cleanliness ${note.cleanliness || 0} · Finish Quality ${note.finishQuality || 0} · Preference ${note.preference || note.overall || 0}
+            </div>
+
+            <div class="quality-score">Quality Score: ${qualityScore} / 25</div>
 
             ${note.tags ? `<div class="tags">Tags: ${escapeHTML(note.tags)}</div>` : ""}
 
@@ -555,7 +641,7 @@
 
           <div class="chart-wrap">
             <canvas id="${chartId}" width="220" height="220"></canvas>
-            <div class="hint">Aroma · Sweetness · Acidity · Body · Finish</div>
+            <div class="chart-label">Flavor profile chart</div>
           </div>
         </div>
       `;
@@ -587,7 +673,7 @@
         Number(note.sweetness) || 0,
         Number(note.acidity) || 0,
         Number(note.bodyScore) || 0,
-        Number(note.finish) || 0
+        Number(note.finishLength || note.finish) || 0
       ];
 
       ctx.clearRect(0, 0, width, height);
@@ -679,6 +765,8 @@
     }
 
     function buildNoteText(note) {
+      const qualityScore = getNoteQualityScore(note);
+
       return `Korean Sool Tasting Note
 
 Drink Name: ${note.name}
@@ -687,15 +775,21 @@ Brewery / Brand: ${note.brewery || "Not entered"}
 ABV: ${note.abv ? note.abv + "%" : "Not entered"}
 Tags: ${note.tags || "None"}
 
-Scores:
-- Aroma: ${note.aroma}/5
+Flavor Profile:
+- Aroma Intensity: ${note.aroma}/5
 - Sweetness: ${note.sweetness}/5
 - Acidity: ${note.acidity}/5
 - Body: ${note.bodyScore}/5
-- Finish: ${note.finish}/5
-- Overall Rating: ${note.overall}/5
+- Finish Length: ${note.finishLength || note.finish || 0}/5
 
-Total Score: ${note.total}/30
+Quality Rating:
+- Balance: ${note.balance || 0}/5
+- Complexity: ${note.complexity || 0}/5
+- Cleanliness: ${note.cleanliness || 0}/5
+- Finish Quality: ${note.finishQuality || 0}/5
+- Personal Preference: ${note.preference || note.overall || 0}/5
+
+Quality Score: ${qualityScore}/25
 
 Tasting Notes:
 ${note.memo || "No tasting note entered."}`;
@@ -714,13 +808,20 @@ ${note.memo || "No tasting note entered."}`;
         brewery: note.brewery,
         abv: note.abv,
         tags: note.tags,
+
         aroma: note.aroma,
         sweetness: note.sweetness,
         acidity: note.acidity,
         bodyScore: note.bodyScore,
-        finish: note.finish,
-        overall: note.overall,
-        total: note.total,
+        finishLength: note.finishLength || note.finish || 0,
+
+        balance: note.balance || 0,
+        complexity: note.complexity || 0,
+        cleanliness: note.cleanliness || 0,
+        finishQuality: note.finishQuality || 0,
+        preference: note.preference || note.overall || 0,
+        qualityScore: getNoteQualityScore(note),
+
         memo: note.memo
       };
 
@@ -811,7 +912,9 @@ ${note.memo || "No tasting note entered."}`;
 
       const headers = [
         "Date", "Name", "Type", "Brewery", "ABV", "Tags",
-        "Aroma", "Sweetness", "Acidity", "Body", "Finish", "Overall", "Total", "Favorite", "Memo"
+        "Aroma Intensity", "Sweetness", "Acidity", "Body", "Finish Length",
+        "Balance", "Complexity", "Cleanliness", "Finish Quality", "Personal Preference",
+        "Quality Score", "Favorite", "Memo"
       ];
 
       const rows = notes.map(note => [
@@ -821,13 +924,20 @@ ${note.memo || "No tasting note entered."}`;
         note.brewery,
         note.abv,
         note.tags,
+
         note.aroma,
         note.sweetness,
         note.acidity,
         note.bodyScore,
-        note.finish,
-        note.overall,
-        note.total,
+        note.finishLength || note.finish || 0,
+
+        note.balance || 0,
+        note.complexity || 0,
+        note.cleanliness || 0,
+        note.finishQuality || 0,
+        note.preference || note.overall || 0,
+
+        getNoteQualityScore(note),
         note.favorite ? "Yes" : "No",
         note.memo
       ]);
@@ -856,7 +966,7 @@ ${note.memo || "No tasting note entered."}`;
         .replace(/'/g, "&#039;");
     }
 
-    updateScore();
+    updateQualityScore();
     renderNotes();
     loadSharedNote();
   </script>
